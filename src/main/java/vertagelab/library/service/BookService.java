@@ -38,19 +38,19 @@ public class BookService {
     }
 
     public Book updateBook(Book book) {
-        Book existsingBook = repository.findById(book.getBook_id()).orElse(null);
+        Book existingBook = repository.findById(book.getBook_id()).orElse(null);
         if (book.getAuthor() != null) {
-            existsingBook.setAuthor(book.getAuthor());
+            existingBook.setAuthor(book.getAuthor());
         }
-//        existsingBook.setAuthor(book.getAuthor());
+//        existingBook.setAuthor(book.getAuthor());
         if (book.getTitle() != null) {
-            existsingBook.setTitle(book.getTitle());
+            existingBook.setTitle(book.getTitle());
         }
-//        existsingBook.setTitle(book.getTitle());
+//        existingBook.setTitle(book.getTitle());
         if (book.getUser() != null) {
-        existsingBook.setUser(book.getUser());
+        existingBook.setUser(book.getUser());
         }
-//        existsingBook.setUser(book.getUser());
-        return repository.save(existsingBook);
+//        existingBook.setUser(book.getUser());
+        return repository.save(existingBook);
     }
 }

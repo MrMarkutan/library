@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON library.* TO 'library_admin'@'%';
