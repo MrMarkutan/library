@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vertagelab.library.entity.Book;
 import vertagelab.library.entity.User;
+import vertagelab.library.exception.UserNotFoundException;
 import vertagelab.library.repository.BookRepository;
 import vertagelab.library.repository.UserRepository;
 
@@ -38,7 +39,8 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        User existingUser = userRepository.findById(user.getUser_id()).orElse(null);
+        User existingUser = userRepository.findById(user.getUser_id())
+                .orElseThrow(() -> new UserNotFoundException(user.getName() + " was not found."));
         if (user.getName() != null) {
             existingUser.setName(user.getName());
         }
