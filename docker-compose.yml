@@ -15,4 +15,4 @@ services:
     expose:
       - 3306
     volumes:
-      - ./privilegies.sql:/docker-entrypoint-initdb.d/privilegies.sql
+      - ./privileges.sql:/docker-entrypoint-initdb.d/privileges.sql
