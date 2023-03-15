@@ -17,11 +17,13 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Book addBook(@RequestBody Book book) {
         return bookService.saveBook(book);
     }
 
     @PostMapping("/list")
+    @ResponseStatus(HttpStatus.CREATED)
     public List<Book> addBooks(@RequestBody List<Book> books) {
         return bookService.saveBooks(books);
     }
