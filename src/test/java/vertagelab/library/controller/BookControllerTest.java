@@ -39,13 +39,10 @@ class BookControllerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    String title = "Test Title";
-    String author = "Test Author";
-
 
     @BeforeEach
     void setUp() {
-        book = new Book(title, author);
+        book = new Book("Test Title", "Test Author");
         book.setAvailable(true);
     }
 
@@ -106,14 +103,14 @@ class BookControllerTest {
     void getBookByTitle() throws Exception {
         when(bookService.getBookByTitle(anyString())).thenReturn(book);
 
-        mockMvc.perform(get("/book/findByTitle/" + title))
+        mockMvc.perform(get("/book/findByTitle/testTitle"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
                 .andExpect(jsonPath("$.available").value(book.isAvailable()));
 
-        verify(bookService, times(1)).getBookByTitle(title);
+        verify(bookService, times(1)).getBookByTitle(anyString());
     }
 
     @Test
