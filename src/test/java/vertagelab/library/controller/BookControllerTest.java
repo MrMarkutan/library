@@ -17,6 +17,7 @@ import vertagelab.library.service.BookService;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -140,7 +141,18 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.title").value(updatedBook.getTitle()))
                 .andExpect(jsonPath("$.author").value(updatedBook.getAuthor()))
                 .andExpect(jsonPath("$.available").value(updatedBook.isAvailable()));
+    }
 
-//        verify(bookService,times(1)).updateBook();
+
+    @Test
+    void handleException() throws Exception {
+        BookNotFoundException exception = new BookNotFoundException("Test book was not found.");
+        when(bookService.getBookByTitle(anyString())).thenThrow(exception);
+
+        mockMvc.perform(get("/book/findByTitle/testBook"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", is(exception.getMessage())));
+
+        verify(bookService, times(1)).getBookByTitle(anyString());
     }
 }
