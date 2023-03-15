@@ -8,42 +8,43 @@ import vertagelab.library.service.BookService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/book")
 public class BookController {
 
     @Autowired
-    private BookService service;
+    private BookService bookService;
 
-    @PostMapping("/book")
+    @PostMapping
     public Book addBook(@RequestBody Book book) {
-        return service.saveBook(book);
+        return bookService.saveBook(book);
     }
 
-    @PostMapping("/books")
+    @PostMapping("/list")
     public List<Book> addBooks(@RequestBody List<Book> books) {
-        return service.saveBooks(books);
+        return bookService.saveBooks(books);
     }
 
-    @GetMapping("/books")
+    @GetMapping("/list")
     public List<Book> findAllBooks() {
-        return service.getBooks();
+        return bookService.getBooks();
     }
 
-    @GetMapping("/book")
+    @GetMapping
     public Book getBookById(@RequestParam(value = "bookid") int bookid) {
-        return service.getBookById(bookid);
+        return bookService.getBookById(bookid);
     }
     @GetMapping("/findByTitle/{title}")
     public Book getBookByTitle(@PathVariable String title) {
-        return service.getBookByTitle(title);
+        return bookService.getBookByTitle(title);
     }
 
-    @DeleteMapping("/deleteBook")
-    public String deleteBook(@RequestParam(value = "bookid") int bookid) {
-        return service.deleteBook(bookid);
+    @DeleteMapping("/{bookId}/delete")
+    public String deleteBook(@PathVariable int bookId) {
+        return bookService.deleteBook(bookId);
     }
 
-    @PutMapping("/updateBook")
-    public Book updateBook(@RequestBody Book book) {
-        return service.updateBook(book);
+    @PutMapping("/{bookId}/update")
+    public Book updateBook(@PathVariable int bookId, @RequestBody Book book) {
+        return bookService.updateBook(bookId, book);
     }
 }

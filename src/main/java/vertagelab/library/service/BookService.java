@@ -11,49 +11,46 @@ import java.util.List;
 @Service
 public class BookService {
     @Autowired
-    private BookRepository repository;
+    private BookRepository bookRepository;
 
     public Book saveBook(Book book) {
-        return repository.save(book);
+        return bookRepository.save(book);
     }
 
     public List<Book> saveBooks(List<Book> books) {
-        return repository.saveAll(books);
+        return bookRepository.saveAll(books);
     }
 
     public List<Book> getBooks() {
-        return repository.findAll();
+        return bookRepository.findAll();
     }
 
     public Book getBookById(int id) {
-        return repository.findById(id).orElse(null);
+        return bookRepository.findById(id).orElse(null);
     }
 
     public Book getBookByTitle(String title) {
-        return repository.findByTitle(title);
+        return bookRepository.findByTitle(title);
     }
 
     public String deleteBook(int id) {
-        repository.deleteById(id);
+        bookRepository.deleteById(id);
         return "Book #" + id + " was removed.";
     }
 
-    public Book updateBook(Book book) {
-        Book existingBook = repository.findById(book.getBook_id())
-                .orElseThrow(() ->  new BookNotFoundException(book.getTitle() + "is not found."));
+    public Book updateBook(int bookId, Book book) {
+        Book existingBook = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book #" + bookId + " to update is not found."));
 
         if (book.getAuthor() != null) {
             existingBook.setAuthor(book.getAuthor());
         }
-//        existingBook.setAuthor(book.getAuthor());
         if (book.getTitle() != null) {
             existingBook.setTitle(book.getTitle());
         }
-//        existingBook.setTitle(book.getTitle());
         if (book.getUser() != null) {
             existingBook.setUser(book.getUser());
         }
-//        existingBook.setUser(book.getUser());
-        return repository.save(existingBook);
+        return bookRepository.save(existingBook);
     }
 }
