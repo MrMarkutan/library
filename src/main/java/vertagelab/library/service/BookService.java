@@ -26,16 +26,18 @@ public class BookService {
     }
 
     public Book getBookById(int id) {
-        return bookRepository.findById(id).orElse(null);
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book #" + id + " is not found."));
     }
 
     public Book getBookByTitle(String title) {
-        return bookRepository.findByTitle(title);
+        return bookRepository.findByTitle(title)
+                .orElseThrow(() -> new BookNotFoundException("Book \"" + title + "\" is not found."));
     }
 
     public String deleteBook(int id) {
-        bookRepository.deleteById(id);
-        return "Book #" + id + " was removed.";
+        bookRepository.delete(getBookById(id));
+        return "Book #" + id + " was deleted.";
     }
 
     public Book updateBook(int bookId, Book book) {

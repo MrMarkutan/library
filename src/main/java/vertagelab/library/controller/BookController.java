@@ -1,8 +1,10 @@
 package vertagelab.library.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import vertagelab.library.entity.Book;
+import vertagelab.library.exception.BookNotFoundException;
 import vertagelab.library.service.BookService;
 
 import java.util.List;
@@ -46,5 +48,11 @@ public class BookController {
     @PutMapping("/{bookId}/update")
     public Book updateBook(@PathVariable int bookId, @RequestBody Book book) {
         return bookService.updateBook(bookId, book);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleException(Exception e){
+        return e.getMessage();
     }
 }
