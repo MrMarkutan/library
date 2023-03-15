@@ -31,13 +31,11 @@ class BookControllerTest {
     @MockBean
     BookService bookService;
     @Autowired
-    BookController bookController;
-    @Autowired
     private MockMvc mockMvc;
 
     private Book book;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @BeforeEach
