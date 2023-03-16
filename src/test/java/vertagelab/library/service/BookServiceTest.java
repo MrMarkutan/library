@@ -119,11 +119,13 @@ class BookServiceTest {
 
     @Test
     void deleteBook() {
-/// TODO: 15.03.2023 resolve
+        int id = 10;
 
-        bookService.deleteBook(10);
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
 
-        verify(bookRepository, times(1)).delete(any());
+        bookService.deleteBook(id);
+
+        verify(bookRepository, times(1)).delete(book);
     }
 
     @Test
