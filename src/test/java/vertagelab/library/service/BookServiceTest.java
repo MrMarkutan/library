@@ -27,20 +27,12 @@ class BookServiceTest {
     @InjectMocks
     private BookService bookService;
 
-    private static final String addBookToDB =
-            "insert into book_table(book_id,title,author,available) values (11,'Test_title', 'Test_author', true)";
-
-    @Autowired
-    private JdbcTemplate jdbc;
-
     private Book book;
 
     @BeforeEach
     void setUp() {
-//        jdbc.execute(addBookToDB);
         book = new Book("Test Title", "Test Author");
     }
-
     @Test
     void saveBook() {
         when(bookRepository.save(any())).thenReturn(book);
@@ -97,8 +89,8 @@ class BookServiceTest {
 
         Book bookById = bookService.getBookById(100);
         assertNotNull(bookById);
-        assertEquals("Test Title", bookById.getTitle());
-        assertEquals("Test Author", bookById.getAuthor());
+        assertEquals(book.getTitle(), bookById.getTitle());
+        assertEquals(book.getAuthor(), bookById.getAuthor());
         assertTrue(bookById.isAvailable());
 
         verify(bookRepository, times(1)).findById(100);
@@ -130,10 +122,12 @@ class BookServiceTest {
 
     @Test
     void updateBook() {
-        when(bookRepository.save(any())).thenReturn(book);
-        when(bookRepository.findById(anyInt())).thenReturn(Optional.of(book));
+        Book extra = new Book("New", "Book");
 
-        Book updatedBook = bookService.updateBook(100, new Book("New", "Book"));
+        when(bookRepository.save(any())).thenReturn(book);
+        when(bookRepository.findById(anyInt())).thenReturn(Optional.of(extra));
+
+        Book updatedBook = bookService.updateBook(100, extra);
 
         assertNotNull(updatedBook);
         assertEquals(book.getTitle(), updatedBook.getTitle());
