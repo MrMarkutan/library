@@ -1,8 +1,11 @@
 package vertagelab.library.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import vertagelab.library.entity.User;
+import vertagelab.library.exception.BookNotFoundException;
+import vertagelab.library.exception.UserNotFoundException;
 import vertagelab.library.service.UserService;
 
 import java.util.List;
@@ -53,5 +56,11 @@ public class UserController {
     public String returnBookFromUser(@PathVariable int userId,
                                      @PathVariable int bookId) {
         return userService.returnBookFromUser(userId, bookId);
+    }
+
+    @ExceptionHandler({UserNotFoundException.class, BookNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleException(Exception e) {
+        return e.getMessage();
     }
 }
