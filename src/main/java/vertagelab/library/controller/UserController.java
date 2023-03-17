@@ -8,49 +8,50 @@ import vertagelab.library.service.UserService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/user")
+    @PostMapping
     public User addUser(@RequestBody User user) {
         return userService.saveUser(user);
     }
-    @PostMapping("/users")
+
+    @PostMapping("/list")
     public List<User> addUsers(@RequestBody List<User> users) {
         return userService.saveUsers(users);
     }
-    @GetMapping("/users")
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int userId) {
+        return userService.getUserById(userId);
+    }
+
+    @GetMapping("/list")
     public List<User> findAllUsers() {
         return userService.getUsers();
     }
-    @GetMapping("/user")
-    public User getUserById(@RequestParam(value = "userid") int userid) {
-        return userService.getUserById(userid);
+
+    @DeleteMapping("/{id}/delete")
+    public String deleteUser(@PathVariable int userId) {
+        return userService.deleteUser(userId);
     }
-    @PutMapping("/deleteUser")
-//    @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam(value = "userid") int userid) {
-        return userService.deleteUser(userid);
-    }
-    @PutMapping("/updateUser")
-    public User updateUser(@RequestBody User user) {
+
+    @PutMapping("/{id}/update")
+    public User updateUser(@PathVariable int userId, @RequestBody User user) {
         return userService.updateUser(user);
     }
 
-    @PutMapping("/takeBook")
-    public String takeBookToUser(@RequestParam(value = "userid") int userid,
-                                 @RequestParam(value = "bookid") int bookid) {
-        return userService.addBookToUser(userid, bookid);
+    @PutMapping("/{userId}/takeBook/{bookId}")
+    public String takeBookToUser(@PathVariable int userId,
+                                 @PathVariable int bookId) {
+        return userService.addBookToUser(userId, bookId);
     }
 
-    @PutMapping("/returnBook")
-    public String returnBookFromUser(@RequestParam(value = "userid") int userid,
-                                     @RequestParam(value = "bookid") int bookid) {
-        return userService.returnBookFromUser(userid, bookid);
+    @PutMapping("/{userId}/returnBook/{bookId}")
+    public String returnBookFromUser(@PathVariable int userId,
+                                     @PathVariable int bookId) {
+        return userService.returnBookFromUser(userId, bookId);
     }
-
-
-
-
 }
