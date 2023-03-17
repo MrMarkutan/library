@@ -111,13 +111,8 @@ class BookServiceTest {
 
     @Test
     void deleteBook() {
-        int id = 10;
-
-        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-
-        bookService.deleteBook(id);
-
-        verify(bookRepository, times(1)).delete(book);
+        bookService.deleteBook(100);
+        verify(bookRepository, times(1)).deleteById(anyInt());
     }
 
     @Test
