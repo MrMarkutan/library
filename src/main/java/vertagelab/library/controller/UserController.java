@@ -23,7 +23,7 @@ public class UserController {
         return userService.saveUsers(users);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public User getUserById(@PathVariable int userId) {
         return userService.getUserById(userId);
     }
@@ -33,14 +33,14 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{userId}/delete")
     public String deleteUser(@PathVariable int userId) {
         return userService.deleteUser(userId);
     }
 
-    @PutMapping("/{id}/update")
-    public User updateUser(@PathVariable int userId, @RequestBody User user) {
-        return userService.updateUser(user);
+    @PutMapping("/{userId}/update")
+    public User updateUser(@PathVariable int userId, @RequestBody User update) {
+        return userService.updateUser(userId, update);
     }
 
     @PutMapping("/{userId}/takeBook/{bookId}")
