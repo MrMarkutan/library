@@ -17,11 +17,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User user) {
         return userService.saveUser(user);
     }
 
     @PostMapping("/all")
+    @ResponseStatus(HttpStatus.CREATED)
     public List<User> addUsers(@RequestBody List<User> users) {
         return userService.saveUsers(users);
     }
