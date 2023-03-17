@@ -63,7 +63,7 @@ class BookControllerTest {
     void addBooks() throws Exception {
         when(bookService.saveBooks(any())).thenReturn(List.of(book, book, book));
 
-        mockMvc.perform(post("/book/list")
+        mockMvc.perform(post("/book/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(List.of(book, book, book))))
                 .andExpect(status().isCreated())
@@ -75,7 +75,7 @@ class BookControllerTest {
     void findAllBooks() throws Exception {
         when(bookService.getBooks()).thenReturn(List.of(book, book, book));
 
-        mockMvc.perform(get("/book/list"))
+        mockMvc.perform(get("/book/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(3)));

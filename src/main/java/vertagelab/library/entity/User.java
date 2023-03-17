@@ -9,7 +9,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_id;
+    private int userId;
     private String name;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> bookList;
@@ -17,8 +17,8 @@ public class User {
     public User() {
     }
 
-    public User(int user_id, String name) {
-        this.user_id = user_id;
+    public User(int userId, String name) {
+        this.userId = userId;
         this.name = name;
         bookList = new ArrayList<>();
     }
@@ -34,8 +34,8 @@ public class User {
         book.setAvailable(true);
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
     public String getName() {

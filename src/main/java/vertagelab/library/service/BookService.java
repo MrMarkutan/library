@@ -8,6 +8,8 @@ import vertagelab.library.repository.BookRepository;
 
 import java.util.List;
 
+import static vertagelab.library.utils.Utils.bookNotFound;
+
 @Service
 public class BookService {
     @Autowired
@@ -25,24 +27,24 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book getBookById(int id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book #" + id + " is not found."));
+    public Book getBookById(int bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> bookNotFound(bookId));
     }
 
     public Book getBookByTitle(String title) {
         return bookRepository.findByTitle(title)
-                .orElseThrow(() -> new BookNotFoundException("Book \"" + title + "\" is not found."));
+                .orElseThrow(() -> bookNotFound(title));
     }
 
-    public String deleteBook(int id) {
-        bookRepository.delete(getBookById(id));
-        return "Book #" + id + " was deleted.";
+    public String deleteBook(int bookId) {
+        bookRepository.deleteById(bookId);
+        return "Book #" + bookId + " was deleted.";
     }
 
     public Book updateBook(int bookId, Book book) {
         Book existingBook = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book #" + bookId + " to update is not found."));
+                .orElseThrow(() -> bookNotFound(bookId));
 
         if (book.getAuthor() != null) {
             existingBook.setAuthor(book.getAuthor());

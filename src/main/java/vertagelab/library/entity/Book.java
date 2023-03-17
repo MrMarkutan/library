@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Book {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int book_id;
+    private int bookId;
     private String title;
     private String author;
     private boolean available = true;
@@ -30,8 +30,8 @@ public class Book {
 //        setAvailable(true);
     }
 
-    public int getBook_id() {
-        return book_id;
+    public int getBookId() {
+        return bookId;
     }
 
     public String getTitle() {

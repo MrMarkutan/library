@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vertagelab.library.entity.Book;
 import vertagelab.library.entity.User;
-import vertagelab.library.exception.UserNotFoundException;
 import vertagelab.library.repository.BookRepository;
 import vertagelab.library.repository.UserRepository;
 
 import java.util.List;
+
+import static vertagelab.library.utils.Utils.bookNotFound;
+import static vertagelab.library.utils.Utils.userNotFound;
 
 @Service
 public class UserService {
@@ -25,34 +27,34 @@ public class UserService {
         return userRepository.saveAll(users);
     }
 
+    public User getUserById(int userId) {
+        return userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
+    }
+
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserById(int id) {
-        return userRepository.findById(id).orElse(null);
+    public String deleteUser(int userId) {
+        userRepository.deleteById(userId);
+        return "User #" + userId + " was deleted.";
     }
 
-    public String deleteUser(int user_id) {
-        userRepository.deleteById(user_id);
-        return "User #" + user_id + " was deleted.";
-    }
+    public User updateUser(int userId, User updatedUser) {
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
 
-    public User updateUser(User user) {
-        User existingUser = userRepository.findById(user.getUser_id())
-                .orElseThrow(() -> new UserNotFoundException(user.getName() + " was not found."));
-        if (user.getName() != null) {
-            existingUser.setName(user.getName());
+        if (updatedUser.getName() != null) {
+            existingUser.setName(updatedUser.getName());
         }
-        if (user.getBookList() != null) {
-            existingUser.setBookList(user.getBookList());
+        if (updatedUser.getBookList() != null) {
+            existingUser.setBookList(updatedUser.getBookList());
         }
         return userRepository.save(existingUser);
     }
 
-    public String addBookToUser(int user_id, int book_id) {
-        User user = userRepository.findById(user_id).orElse(null);
-        Book book = bookRepository.findById(book_id).orElse(null);
+    public String addBookToUser(int userId, int bookId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> bookNotFound(bookId));
         if (book.isAvailable()) {
             user.addBook(book);
             userRepository.save(user);
@@ -61,13 +63,14 @@ public class UserService {
             return "Book \"" + book.getTitle() + "\" is not available.";
         }
     }
-    public String returnBookFromUser(int user_id,int book_id) {
-        User user = userRepository.findById(user_id).orElse(null);
-        Book book = bookRepository.findById(book_id).orElse(null);
 
+    public String returnBookFromUser(int userId, int bookId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> bookNotFound(bookId));
         user.removeBook(book);
         userRepository.save(user);
 
         return "\"" + book.getTitle() + "\" was returned by " + user.getName();
     }
+
 }

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import vertagelab.library.entity.Book;
 import vertagelab.library.repository.BookRepository;
 
@@ -33,6 +31,7 @@ class BookServiceTest {
     void setUp() {
         book = new Book("Test Title", "Test Author");
     }
+
     @Test
     void saveBook() {
         when(bookRepository.save(any())).thenReturn(book);
@@ -111,13 +110,12 @@ class BookServiceTest {
 
     @Test
     void deleteBook() {
-        int id = 10;
+        int bookId = 100;
+        String result = bookService.deleteBook(bookId);
 
-        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
+        assertEquals("Book #" + bookId + " was deleted.", result);
 
-        bookService.deleteBook(id);
-
-        verify(bookRepository, times(1)).delete(book);
+        verify(bookRepository, times(1)).deleteById(anyInt());
     }
 
     @Test
