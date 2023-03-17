@@ -22,13 +22,13 @@ public class BookController {
         return bookService.saveBook(book);
     }
 
-    @PostMapping("/list")
+    @PostMapping("/all")
     @ResponseStatus(HttpStatus.CREATED)
     public List<Book> addBooks(@RequestBody List<Book> books) {
         return bookService.saveBooks(books);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/all")
     public List<Book> findAllBooks() {
         return bookService.getBooks();
     }
