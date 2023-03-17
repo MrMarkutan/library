@@ -21,7 +21,7 @@ public class UserController {
         return userService.saveUser(user);
     }
 
-    @PostMapping("/list")
+    @PostMapping("/all")
     public List<User> addUsers(@RequestBody List<User> users) {
         return userService.saveUsers(users);
     }
@@ -31,7 +31,7 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/all")
     public List<User> findAllUsers() {
         return userService.getUsers();
     }
