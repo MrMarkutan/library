@@ -51,10 +51,4 @@ public class BookController {
     public Book updateBook(@PathVariable int bookId, @RequestBody Book book) {
         return bookService.updateBook(bookId, book);
     }
-
-    @ExceptionHandler(BookNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(Exception e){
-        return e.getMessage();
-    }
 }

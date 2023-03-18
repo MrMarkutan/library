@@ -60,9 +60,9 @@ public class UserController {
         return userService.returnBookFromUser(userId, bookId);
     }
 
-    @ExceptionHandler({UserNotFoundException.class, BookNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(Exception e) {
-        return e.getMessage();
-    }
+//    @ExceptionHandler({UserNotFoundException.class, BookNotFoundException.class})
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public String handleException(Exception e) {
+//        return e.getMessage();
+//    }
 }
