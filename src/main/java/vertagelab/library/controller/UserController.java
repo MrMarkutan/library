@@ -2,6 +2,7 @@ package vertagelab.library.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vertagelab.library.entity.User;
 import vertagelab.library.exception.BookNotFoundException;
@@ -18,45 +19,45 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/all")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<User> addUsers(@RequestBody List<User> users) {
-        return userService.saveUsers(users);
+    public ResponseEntity<List<User>> addUsers(@RequestBody List<User> users) {
+        return new ResponseEntity<>(userService.saveUsers(users), HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable int userId) {
-        return userService.getUserById(userId);
+    public ResponseEntity<User> getUserById(@PathVariable int userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public List<User> findAllUsers() {
-        return userService.getUsers();
+    public ResponseEntity<List<User>> findAllUsers() {
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable int userId) {
-        return userService.deleteUser(userId);
+    public ResponseEntity<String> deleteUser(@PathVariable int userId) {
+        return new ResponseEntity<>(userService.deleteUser(userId),HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/update")
-    public User updateUser(@PathVariable int userId, @RequestBody User update) {
-        return userService.updateUser(userId, update);
+    public ResponseEntity<User> updateUser(@PathVariable int userId, @RequestBody User update) {
+        return new ResponseEntity<>(userService.updateUser(userId, update), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/takeBook/{bookId}")
-    public String takeBookToUser(@PathVariable int userId,
+    public ResponseEntity<String> takeBookToUser(@PathVariable int userId,
                                  @PathVariable int bookId) {
-        return userService.addBookToUser(userId, bookId);
+        return new ResponseEntity<>(userService.addBookToUser(userId, bookId), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/returnBook/{bookId}")
-    public String returnBookFromUser(@PathVariable int userId,
+    public ResponseEntity<String> returnBookFromUser(@PathVariable int userId,
                                      @PathVariable int bookId) {
-        return userService.returnBookFromUser(userId, bookId);
+        return new ResponseEntity<>(userService.returnBookFromUser(userId, bookId),HttpStatus.OK);
     }
 }
