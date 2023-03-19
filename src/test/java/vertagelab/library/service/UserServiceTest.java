@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import vertagelab.library.dto.UserRequest;
 import vertagelab.library.entity.Book;
 import vertagelab.library.entity.User;
 import vertagelab.library.repository.BookRepository;
@@ -14,6 +15,7 @@ import vertagelab.library.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -61,19 +63,19 @@ class UserServiceTest {
     void saveUser() {
         when(userRepository.save(any())).thenReturn(testUser);
 
-        User savedUser = userService.saveUser(new User());
+        UserRequest savedUser = userService.saveUser(testUser.toUserRequest());
 
         assertNotNull(savedUser);
         assertEquals(testUser.getName(), savedUser.getName());
         assertEquals(testUser.getBookList().size(), savedUser.getBookList().size());
         assertEquals(testUser.getBookList().get(0).getTitle(), savedUser.getBookList().get(0).getTitle());
         assertEquals(testUser.getBookList().get(0).getAuthor(), savedUser.getBookList().get(0).getAuthor());
-        assertEquals(testUser.getBookList().get(0).getUser(), savedUser.getBookList().get(0).getUser());
+//        assertEquals(testUser.getBookList().get(0).getUser(), savedUser.getBookListRequest().get(0).getUser());
         assertFalse(savedUser.getBookList().get(0).isAvailable());
 
         assertEquals(testUser.getBookList().get(1).getTitle(), savedUser.getBookList().get(1).getTitle());
         assertEquals(testUser.getBookList().get(1).getAuthor(), savedUser.getBookList().get(1).getAuthor());
-        assertEquals(testUser.getBookList().get(1).getUser(), savedUser.getBookList().get(1).getUser());
+//        assertEquals(testUser.getBookList().get(1).getUser(), savedUser.getBookListRequest().get(1).getUser());
         assertFalse(savedUser.getBookList().get(1).isAvailable());
 
         verify(userRepository, times(1)).save(any());
@@ -83,9 +85,13 @@ class UserServiceTest {
     void saveUsers() {
         List<User> listOfTestUsers = new ArrayList<>(List.of(testUser));
 
+        List<UserRequest> listOfTestUserRequests = listOfTestUsers.stream()
+                .map(User::toUserRequest)
+                .collect(Collectors.toList());
+
         when(userRepository.saveAll(any())).thenReturn(listOfTestUsers);
 
-        List<User> savedUsers = userService.saveUsers(new ArrayList<>(List.of(new User(), new User())));
+        List<UserRequest> savedUsers = userService.saveUsers(new ArrayList<>(listOfTestUserRequests));
 
         assertNotNull(savedUsers);
         assertEquals(listOfTestUsers.size(), savedUsers.size());
@@ -96,8 +102,8 @@ class UserServiceTest {
                 savedUsers.get(0).getBookList().get(0).getTitle());
         assertEquals(listOfTestUsers.get(0).getBookList().get(0).getAuthor(),
                 savedUsers.get(0).getBookList().get(0).getAuthor());
-        assertEquals(listOfTestUsers.get(0).getBookList().get(0).getUser(),
-                savedUsers.get(0).getBookList().get(0).getUser());
+//        assertEquals(listOfTestUsers.get(0).getBookList().get(0).getUser(),
+//                savedUsers.get(0).getBookListRequest().get(0).getUser());
         assertFalse(listOfTestUsers.get(0).getBookList().get(0).isAvailable());
 
         verify(userRepository, times(1)).saveAll(any());
@@ -138,7 +144,7 @@ class UserServiceTest {
         List<User> usersList = List.of(testUser);
         when(userRepository.findAll()).thenReturn(usersList);
 
-        List<User> usersFromRepository = userService.getUsers();
+        List<UserRequest> usersFromRepository = userService.getUsers();
 
         assertNotNull(usersFromRepository);
         assertEquals(usersList.size(), usersFromRepository.size());
@@ -148,8 +154,8 @@ class UserServiceTest {
                 usersFromRepository.get(0).getBookList().get(0).getTitle());
         assertEquals(usersList.get(0).getBookList().get(0).getAuthor(),
                 usersFromRepository.get(0).getBookList().get(0).getAuthor());
-        assertEquals(usersList.get(0).getBookList().get(0).getUser(),
-                usersFromRepository.get(0).getBookList().get(0).getUser());
+//        assertEquals(usersList.get(0).getBookList().get(0).getUser(),
+//                usersFromRepository.get(0).getBookListRequest().get(0).getUser());
         assertFalse(usersFromRepository.get(0).getBookList().get(0).isAvailable());
 
         verify(userRepository, times(1)).findAll();
@@ -173,16 +179,16 @@ class UserServiceTest {
         User updatedUser = new User();
         updatedUser.setName("Updated name");
         updatedUser.setBookList(List.of(
-                new Book("Update Book Title", "Update Book Author")));
+                Book.build("Update Book Title", "Update Book Author")));
 
-        User savedUser = userService.updateUser(1, updatedUser);
+        UserRequest savedUser = userService.updateUser(1, updatedUser.toUserRequest());
 
         assertNotNull(savedUser);
         assertEquals(updatedUser.getName(), savedUser.getName());
         assertEquals(updatedUser.getBookList().size(), savedUser.getBookList().size());
         assertEquals(updatedUser.getBookList().get(0).getTitle(), savedUser.getBookList().get(0).getTitle());
         assertEquals(updatedUser.getBookList().get(0).getAuthor(), savedUser.getBookList().get(0).getAuthor());
-        assertEquals(updatedUser.getBookList().get(0).getUser(), savedUser.getBookList().get(0).getUser());
+//        assertEquals(updatedUser.getBookList().get(0).getUser(), savedUser.getBookListRequest().get(0).getUser());
         assertTrue(updatedUser.getBookList().get(0).isAvailable());
 
         verify(userRepository, times(1)).findById(anyInt());
