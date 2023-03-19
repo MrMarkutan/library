@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vertagelab.library.dto.UserRequest;
 import vertagelab.library.entity.User;
 import vertagelab.library.exception.BookNotFoundException;
 import vertagelab.library.exception.UserNotFoundException;
@@ -20,23 +19,23 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserRequest> addUser(@RequestBody UserRequest userRequest) {
-        return new ResponseEntity<>(userService.saveUser(userRequest), HttpStatus.CREATED);
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/all")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<UserRequest>> addUsers(@RequestBody List<UserRequest> usersRequest) {
-        return new ResponseEntity<>(userService.saveUsers(usersRequest), HttpStatus.CREATED);
+    public ResponseEntity<List<User>> addUsers(@RequestBody List<User> users) {
+        return new ResponseEntity<>(userService.saveUsers(users), HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserRequest> getUserById(@PathVariable int userId) {
+    public ResponseEntity<User> getUserById(@PathVariable int userId) {
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserRequest>> findAllUsers() {
+    public ResponseEntity<List<User>> findAllUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
@@ -46,7 +45,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/update")
-    public ResponseEntity<UserRequest> updateUser(@PathVariable int userId, @RequestBody UserRequest update) {
+    public ResponseEntity<User> updateUser(@PathVariable int userId, @RequestBody User update) {
         return new ResponseEntity<>(userService.updateUser(userId, update), HttpStatus.OK);
     }
 
