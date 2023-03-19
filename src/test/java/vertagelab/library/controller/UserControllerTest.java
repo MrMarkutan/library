@@ -42,8 +42,8 @@ class UserControllerTest {
         testUser = new User();
         testUser.setName("Test User Name");
         testUser.setBookList(List.of(
-                 Book.build("First Test Book Title", "First Test Book Author"),
-                 Book.build("Second Test Book Title", "Second Test Book Author")));
+                new Book("First Test Book Title", "First Test Book Author"),
+                new Book("Second Test Book Title", "Second Test Book Author")));
     }
 
     @Test
