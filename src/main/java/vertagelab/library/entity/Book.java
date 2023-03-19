@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "book_table")
+@Table(name = "books")
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "build")
 public class Book {

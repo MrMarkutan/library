@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import vertagelab.library.dto.UserRequest;
 import vertagelab.library.entity.Book;
 import vertagelab.library.entity.User;
 import vertagelab.library.service.UserService;
@@ -20,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ class UserControllerTest {
 
     @Test
     void addUser() throws Exception {
-        when(userService.saveUser(any())).thenReturn(testUser);
+        when(userService.saveUser(any())).thenReturn(testUser.toUserRequest());
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,11 +67,11 @@ class UserControllerTest {
 
     @Test
     void addUsers() throws Exception {
-        when(userService.saveUsers(any())).thenReturn(List.of(testUser, testUser));
+        when(userService.saveUsers(any())).thenReturn(List.of(testUser.toUserRequest(), testUser.toUserRequest()));
 
         mockMvc.perform(post("/user/all")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(new User(), new User()))))
+                        .content(objectMapper.writeValueAsString(List.of(new UserRequest(), new UserRequest()))))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -93,7 +95,7 @@ class UserControllerTest {
 
     @Test
     void getUserById() throws Exception {
-        when(userService.getUserById(anyInt())).thenReturn(testUser);
+        when(userService.getUserById(anyInt())).thenReturn(testUser.toUserRequest());
 
         mockMvc.perform(get("/user/500"))
                 .andExpect(status().isOk())
@@ -110,7 +112,7 @@ class UserControllerTest {
 
     @Test
     void findAllUsers() throws Exception {
-        when(userService.getUsers()).thenReturn(List.of(testUser));
+        when(userService.getUsers()).thenReturn(List.of(testUser.toUserRequest()));
 
         mockMvc.perform(get("/user/all"))
                 .andExpect(status().isOk())
@@ -139,7 +141,7 @@ class UserControllerTest {
 
     @Test
     void updateUser() throws Exception {
-        when(userService.updateUser(anyInt(), any())).thenReturn(testUser);
+        when(userService.updateUser(anyInt(), any())).thenReturn(testUser.toUserRequest());
 
         mockMvc.perform(put("/user/1/update")
                         .contentType(MediaType.APPLICATION_JSON)

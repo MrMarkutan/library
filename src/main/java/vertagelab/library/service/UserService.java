@@ -2,12 +2,15 @@ package vertagelab.library.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vertagelab.library.dto.BookRequest;
+import vertagelab.library.dto.UserRequest;
 import vertagelab.library.entity.Book;
 import vertagelab.library.entity.User;
 import vertagelab.library.repository.BookRepository;
 import vertagelab.library.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static vertagelab.library.utils.Utils.bookNotFound;
 import static vertagelab.library.utils.Utils.userNotFound;
@@ -19,20 +22,29 @@ public class UserService {
     @Autowired
     private BookRepository bookRepository;
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserRequest saveUser(UserRequest userRequest) {
+        User savedUser = userRepository.save(userRequest.toUser());
+        return savedUser.toUserRequest();
     }
 
-    public List<User> saveUsers(List<User> users) {
-        return userRepository.saveAll(users);
+    public List<UserRequest> saveUsers(List<UserRequest> usersRequest) {
+
+        List<User> users = usersRequest.stream()
+                .map(UserRequest::toUser)
+                .collect(Collectors.toList());
+
+        List<User> savedUsers = userRepository.saveAll(users);
+
+        return usersListToUserRequestList(savedUsers);
     }
 
-    public User getUserById(int userId) {
-        return userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
+    public UserRequest getUserById(int userId) {
+        return userRepository.findById(userId).orElseThrow(() -> userNotFound(userId)).toUserRequest();
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserRequest> getUsers() {
+        List<User> users = userRepository.findAll();
+        return usersListToUserRequestList(users);
     }
 
     public String deleteUser(int userId) {
@@ -40,16 +52,21 @@ public class UserService {
         return "User #" + userId + " was deleted.";
     }
 
-    public User updateUser(int userId, User updatedUser) {
+    public UserRequest updateUser(int userId, UserRequest updatedUser) {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> userNotFound(userId));
 
         if (updatedUser.getName() != null) {
             existingUser.setName(updatedUser.getName());
         }
         if (updatedUser.getBookList() != null) {
-            existingUser.setBookList(updatedUser.getBookList());
+            existingUser.setBookList(
+                    updatedUser.getBookList()
+                            .stream()
+                            .map(BookRequest::toBook)
+                            .collect(Collectors.toList()));
         }
-        return userRepository.save(existingUser);
+        User savedUser = userRepository.save(existingUser);
+        return savedUser.toUserRequest();
     }
 
     public String addBookToUser(int userId, int bookId) {
@@ -73,4 +90,9 @@ public class UserService {
         return "\"" + book.getTitle() + "\" was returned by " + user.getName();
     }
 
+    private static List<UserRequest> usersListToUserRequestList(List<User> users) {
+        return users.stream()
+                .map(User::toUserRequest)
+                .collect(Collectors.toList());
+    }
 }
