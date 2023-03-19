@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import vertagelab.library.dto.BookRequest;
 import vertagelab.library.entity.Book;
 import vertagelab.library.repository.BookRepository;
 
@@ -27,19 +26,17 @@ class BookServiceTest {
     private BookService bookService;
 
     private Book book;
-    private BookRequest bookRequest;
 
     @BeforeEach
     void setUp() {
-        book = Book.build("Test Title", "Test Author");
-        bookRequest = book.toBookRequest();
+        book = new Book("Test Title", "Test Author");
     }
 
     @Test
     void saveBook() {
         when(bookRepository.save(any())).thenReturn(book);
 
-        BookRequest savedBook = bookService.saveBook(bookRequest);
+        Book savedBook = bookService.saveBook(new Book("Title to save", "Author to save"));
 
         assertNotNull(savedBook);
         assertEquals(book.getTitle(), savedBook.getTitle());
@@ -50,30 +47,12 @@ class BookServiceTest {
     }
 
     @Test
-    void saveBookWhichIsNotAvailable() {
-        Book naBook = Book.build("Book is n/a", "I AM");
-        naBook.setAvailable(false);
-
-        BookRequest naBookRequest = naBook.toBookRequest();
-
-        when(bookRepository.save(any())).thenReturn(naBook);
-
-        BookRequest savedBook = bookService.saveBook(naBookRequest);
-
-        assertNotNull(savedBook);
-        assertEquals(naBook.getTitle(), savedBook.getTitle());
-        assertEquals(naBook.getAuthor(), savedBook.getAuthor());
-        assertFalse(savedBook.isAvailable());
-
-        verify(bookRepository, times(1)).save(any());
-    }
-
-    @Test
     void saveBooks() {
         when(bookRepository.saveAll(any())).thenReturn(List.of(book, book));
 
-        List<BookRequest> savedBooks = bookService.saveBooks(List.of(
-                book.toBookRequest(), book.toBookRequest()));
+        List<Book> savedBooks = bookService.saveBooks(List.of(
+                new Book("Title to save 1", "Author to save 1"),
+                new Book("Title to save 2", "Author to save 2")));
 
         assertNotNull(savedBooks);
         assertEquals(2, savedBooks.size());
@@ -93,7 +72,7 @@ class BookServiceTest {
     void getBooks() {
         when(bookRepository.findAll()).thenReturn(List.of(book, book));
 
-        List<BookRequest> books = bookService.getBooks();
+        List<Book> books = bookService.getBooks();
         assertNotNull(books);
         assertEquals(2, books.size());
         assertEquals(book.getTitle(), books.get(0).getTitle());
@@ -107,7 +86,7 @@ class BookServiceTest {
     void getBookById() {
         when(bookRepository.findById(anyInt())).thenReturn(Optional.of(book));
 
-        BookRequest bookById = bookService.getBookById(100);
+        Book bookById = bookService.getBookById(100);
         assertNotNull(bookById);
         assertEquals(book.getTitle(), bookById.getTitle());
         assertEquals(book.getAuthor(), bookById.getAuthor());
@@ -120,7 +99,7 @@ class BookServiceTest {
     void getBookByTitle() {
         when(bookRepository.findByTitle(anyString())).thenReturn(Optional.of(book));
 
-        BookRequest bookByTitle = bookService.getBookByTitle(book.getTitle());
+        Book bookByTitle = bookService.getBookByTitle(book.getTitle());
         assertNotNull(bookByTitle);
         assertEquals(book.getTitle(), bookByTitle.getTitle());
         assertEquals(book.getAuthor(), bookByTitle.getAuthor());
@@ -141,19 +120,19 @@ class BookServiceTest {
 
     @Test
     void updateBook() {
-        Book extra = Book.build("New", "Book");
-        BookRequest extraBookRequest = book.toBookRequest();
+        Book extra = new Book("New", "Book");
 
         when(bookRepository.save(any())).thenReturn(book);
         when(bookRepository.findById(anyInt())).thenReturn(Optional.of(extra));
 
-        BookRequest updatedBookRequest = bookService.updateBook(100, extraBookRequest);
+        Book updatedBook = bookService.updateBook(100, extra);
 
-        assertNotNull(updatedBookRequest);
-        assertEquals(book.getTitle(), updatedBookRequest.getTitle());
-        assertEquals(book.getAuthor(), updatedBookRequest.getAuthor());
-        assertTrue(updatedBookRequest.isAvailable());
+        assertNotNull(updatedBook);
+        assertEquals(book.getTitle(), updatedBook.getTitle());
+        assertEquals(book.getAuthor(), updatedBook.getAuthor());
+        assertTrue(updatedBook.isAvailable());
 
         verify(bookRepository, times(1)).save(any());
+
     }
 }

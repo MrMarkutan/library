@@ -179,7 +179,7 @@ class UserServiceTest {
         User updatedUser = new User();
         updatedUser.setName("Updated name");
         updatedUser.setBookList(List.of(
-                Book.build("Update Book Title", "Update Book Author")));
+                new Book("Update Book Title", "Update Book Author")));
 
         UserRequest savedUser = userService.updateUser(1, updatedUser.toUserRequest());
 
