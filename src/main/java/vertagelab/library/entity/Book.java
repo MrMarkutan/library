@@ -1,34 +1,40 @@
 package vertagelab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import vertagelab.library.dto.BookRequest;
 
 import javax.persistence.*;
 
 
 @Entity
-@Table(name="book_table")
+@Table(name = "books")
+@NoArgsConstructor
+@RequiredArgsConstructor(staticName = "build")
 public class Book {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
+
+    @NonNull
     private String title;
+    @NonNull
     private String author;
+    @NonNull
     private boolean available = true;
 
+    public Book(@NonNull String title, @NonNull String author, @NonNull boolean available) {
+        this.title = title;
+        this.author = author;
+        this.available = available;
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-
-    public Book() {
-    }
-
-    public Book(String title, String author) {
-        this.title = title;
-        this.author = author;
-//        setAvailable(true);
-    }
 
     public int getBookId() {
         return bookId;
@@ -64,5 +70,9 @@ public class Book {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public BookRequest toBookRequest() {
+        return BookRequest.build(this.getTitle(), this.getAuthor(), this.isAvailable());
     }
 }
