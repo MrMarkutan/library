@@ -2,12 +2,11 @@ package vertagelab.library.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vertagelab.library.dto.BookRequest;
 import vertagelab.library.entity.Book;
+import vertagelab.library.exception.BookNotFoundException;
 import vertagelab.library.repository.BookRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static vertagelab.library.utils.Utils.bookNotFound;
 
@@ -16,39 +15,26 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public BookRequest saveBook(BookRequest bookRequest) {
-
-        Book savedBook = bookRepository.save(bookRequest.toBook());
-
-        return savedBook.toBookRequest();
+    public Book saveBook(Book book) {
+        return bookRepository.save(book);
     }
 
-    public List<BookRequest> saveBooks(List<BookRequest> booksRequest) {
-        List<Book> books = booksRequest.stream()
-                .map(BookRequest::toBook)
-                .collect(Collectors.toList());
-
-        List<Book> savedBooks = bookRepository.saveAll(books);
-
-        return convertToBooksRequestList(savedBooks);
+    public List<Book> saveBooks(List<Book> books) {
+        return bookRepository.saveAll(books);
     }
 
-    public List<BookRequest> getBooks() {
-        List<Book> books = bookRepository.findAll();
-        return convertToBooksRequestList(books);
+    public List<Book> getBooks() {
+        return bookRepository.findAll();
     }
 
-    public BookRequest getBookById(int bookId) {
-
-        Book book = bookRepository.findById(bookId)
+    public Book getBookById(int bookId) {
+        return bookRepository.findById(bookId)
                 .orElseThrow(() -> bookNotFound(bookId));
-        return book.toBookRequest();
     }
 
-    public BookRequest getBookByTitle(String title) {
-        Book book = bookRepository.findByTitle(title)
+    public Book getBookByTitle(String title) {
+        return bookRepository.findByTitle(title)
                 .orElseThrow(() -> bookNotFound(title));
-        return book.toBookRequest();
     }
 
     public String deleteBook(int bookId) {
@@ -56,28 +42,19 @@ public class BookService {
         return "Book #" + bookId + " was deleted.";
     }
 
-    public BookRequest updateBook(int bookId, BookRequest bookRequest) {
-
+    public Book updateBook(int bookId, Book book) {
         Book existingBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> bookNotFound(bookId));
 
-        Book bookFromRequest = bookRequest.toBook();
-        if (bookFromRequest.getAuthor() != null) {
-            existingBook.setAuthor(bookFromRequest.getAuthor());
+        if (book.getAuthor() != null) {
+            existingBook.setAuthor(book.getAuthor());
         }
-        if (bookFromRequest.getTitle() != null) {
-            existingBook.setTitle(bookFromRequest.getTitle());
+        if (book.getTitle() != null) {
+            existingBook.setTitle(book.getTitle());
         }
-        if (bookFromRequest.getUser() != null) {
-            existingBook.setUser(bookFromRequest.getUser());
+        if (book.getUser() != null) {
+            existingBook.setUser(book.getUser());
         }
-        Book savedBook = bookRepository.save(existingBook);
-        return savedBook.toBookRequest();
-    }
-
-    private List<BookRequest> convertToBooksRequestList(List<Book> savedBooks) {
-        return savedBooks.stream()
-                .map(Book::toBookRequest)
-                .collect(Collectors.toList());
+        return bookRepository.save(existingBook);
     }
 }
