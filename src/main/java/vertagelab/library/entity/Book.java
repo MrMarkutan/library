@@ -1,17 +1,21 @@
 package vertagelab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 
 @Entity
-@Table(name="book_table")
+@Table(name = "book_table")
 public class Book {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
+    @NotBlank(message = "Title field should not be blank.")
     private String title;
+    @NotBlank(message = "Author field should not be blank.")
     private String author;
     private boolean available = true;
 

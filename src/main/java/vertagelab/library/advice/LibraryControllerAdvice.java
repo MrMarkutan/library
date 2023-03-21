@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import vertagelab.library.exception.BookNotFoundException;
 import vertagelab.library.exception.UserNotFoundException;
 
-import java.util.Map;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
@@ -20,5 +23,24 @@ public class LibraryControllerAdvice {
     public ResponseEntity<String> handleUserNotFound(RuntimeException e) {
         log.error(e.getLocalizedMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleConstraintsViolation(ConstraintViolationException e) {
+        List<String> violations = e.getConstraintViolations()
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toList());
+
+        List<String> violationsForLogs = e.getConstraintViolations().stream()
+                .map(ex -> ex.getMessage() + ex.getMessageTemplate() + ex.getPropertyPath())
+                .collect(Collectors.toList());
+        violationsForLogs.forEach(log::error);
+
+        StringBuilder sb = new StringBuilder();
+        violations.forEach(v -> sb.append(v).append("\n"));
+
+        return new ResponseEntity<>(sb.toString(), HttpStatus.NOT_FOUND);
     }
 }
