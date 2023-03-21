@@ -34,7 +34,9 @@ public class LibraryControllerAdvice {
                 .collect(Collectors.toList());
 
         List<String> violationsForLogs = e.getConstraintViolations().stream()
-                .map(ex -> ex.getMessage() + ex.getMessageTemplate() + ex.getPropertyPath())
+                .map(ex -> "Message: " + ex.getMessage() +
+                        " Message Template: " + ex.getMessageTemplate() +
+                        " Property Path: " + ex.getPropertyPath() + ".")
                 .collect(Collectors.toList());
         violationsForLogs.forEach(log::error);
 
