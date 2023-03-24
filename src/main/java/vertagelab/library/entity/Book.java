@@ -3,6 +3,7 @@ package vertagelab.library.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 
 @Entity
@@ -11,7 +12,9 @@ public class Book {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int bookId;
+    @NotEmpty(message = "Title cannot be empty.")
     private String title;
+    @NotEmpty(message = "Author cannot be empty.")
     private String author;
     private boolean available = true;
 
